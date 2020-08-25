@@ -17,22 +17,37 @@ client.on("message", (message) => {
       .substring(PREFIX.length)
       .split(/\s+/);
 
-    if(CMD_NAME === "kick"){
-        message.channel.send("Kicked the user"); 
-    }
-    console.log(CMD_NAME);
-    console.log(args);
-  }
+    if (CMD_NAME === "kick") {
+      if (!message.member.hasPermission("KICK_MEMBERS"))
+        return message.channel.send(
+          "You do not have permissions to kick the user"
+        );
+      if (args.length === 0) return message.reply("Please Provide An ID");
+      const member = message.guild.members.cache.get(args[0]);
+      if (member) {
+        member
+          .kick()
+          .then((member) => message.channel.send(`${member} was kicked!`))
+          .catch((err) =>
+            message.channel.send(
+              "I do not have permissions kick that user :(( sad sad "
+            )
+          );
+      } else {
+        message.channel.send("Member not in the server!");
+      }
+    } else if (CMD_NAME == "ban") {
+      if (!message.member.hasPermission("BAN_MEMBERS"))
+        return message.channel.send(
+          "You do not have permissions to ban the user"
+        );
 
-  
+      if (args.length === 0) return message.reply("Please Provide An ID");
+      message.guild.members.ban(args[0]).catch((err) => console.log(err));
+    }
+  }
 
   console.log(`[${message.author.tag}]: ${message.content}`);
-  if (message.content === "bachhi") {
-    message.reply("bacchhhhaaaaaaaaaa");
-  }
-  if (message.content === "baccha") {
-    message.reply("bacchhhhhhhhhiiiiiiiiiiiiiiiiii");
-  }
 });
 
 client.login(process.env.DISCORDJS_BOT_TOKEN);
