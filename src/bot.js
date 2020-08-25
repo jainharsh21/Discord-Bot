@@ -81,4 +81,27 @@ client.on("messageReactionAdd", (reaction, user) => {
   }
 });
 
+client.on("messageReactionRemove", (reaction, user) => {
+    const { name } = reaction.emoji;
+    const member = reaction.message.guild.members.cache.get(user.id);
+  
+    if (reaction.message.id === "747812966702907573") {
+      console.log("Hello");
+      switch (name) {
+        case "🍎":
+          member.roles.remove('747817385934848067');
+          break;
+        case "🥭":
+          member.roles.remove('747817391584706642');
+          break;
+        case "🍇":
+          member.roles.remove('747817401458098236');
+          break;
+        case "🍉":
+          member.roles.remove('747817406079959210');
+          break;
+      }
+    }
+  });
+
 client.login(process.env.DISCORDJS_BOT_TOKEN);
