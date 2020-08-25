@@ -8,7 +8,7 @@ client.on("ready", () => {
   console.log(`${client.user.tag} has logged in!`);
 });
 
-client.on("message", (message) => {
+client.on("message", async (message) => {
   if (message.author.bot) return;
 
   if (message.content.startsWith(PREFIX)) {
@@ -25,14 +25,14 @@ client.on("message", (message) => {
       if (args.length === 0) return message.reply("Please Provide An ID");
       const member = message.guild.members.cache.get(args[0]);
       if (member) {
-        member
-          .kick()
-          .then((member) => message.channel.send(`${member} was kicked!`))
-          .catch((err) =>
-            message.channel.send(
-              "I do not have permissions kick that user :(( sad sad "
-            )
+        try {
+          const user = await member.kick();
+          message.channel.send(`${user} was kicked!`);
+        } catch (err) {
+          message.channel.send(
+            "I do not have permissions kick that user :(( sad sad "
           );
+        }
       } else {
         message.channel.send("Member not in the server!");
       }
@@ -43,7 +43,13 @@ client.on("message", (message) => {
         );
 
       if (args.length === 0) return message.reply("Please Provide An ID");
-      message.guild.members.ban(args[0]).catch((err) => console.log(err));
+      try {
+        const user = await message.guild.members.ban(args[0]);
+        message.channel.send("User Banned Succesfully");
+        console.log(user);
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 
